@@ -13,8 +13,8 @@ function showMessage(msg, color = "white") {
     }, 3000);
 }
 
-// 🔹 SIGNUP
-async function signup() {
+// 🔹 SIGNUP (GLOBAL)
+window.signup = async function () {
     console.log("Signup button clicked");
 
     const username = document.getElementById("username").value.trim();
@@ -31,10 +31,7 @@ async function signup() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+            body: JSON.stringify({ username, password })
         });
 
         const data = await res.json();
@@ -54,10 +51,10 @@ async function signup() {
         console.error("Signup error:", err);
         showMessage("❌ Server error", "red");
     }
-}
+};
 
-// 🔹 LOGIN
-async function login() {
+// 🔹 LOGIN (GLOBAL)
+window.login = async function () {
     console.log("Login button clicked");
 
     const username = document.getElementById("username").value.trim();
@@ -74,10 +71,7 @@ async function login() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+            body: JSON.stringify({ username, password })
         });
 
         const data = await res.json();
@@ -86,8 +80,8 @@ async function login() {
         if (data.error) {
             showMessage("❌ " + data.error, "red");
         } else {
-
-            localStorage.setItem("token", data.token);
+            // 🔥 FIX: correct key
+            localStorage.setItem("token", data.access_token);
 
             showMessage("✅ Login successful!", "lightgreen");
 
@@ -100,4 +94,4 @@ async function login() {
         console.error("Login error:", err);
         showMessage("❌ Server error", "red");
     }
-}
+};
