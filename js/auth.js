@@ -1,6 +1,6 @@
 const API_URL = "https://distributed-file-storage-system.onrender.com";
 
-// 🔹 Message
+// 🔹 Show message
 function showMessage(msg, color = "white") {
     const box = document.getElementById("messageBox");
     box.innerText = msg;
@@ -9,7 +9,7 @@ function showMessage(msg, color = "white") {
     setTimeout(() => box.innerText = "", 3000);
 }
 
-// 🔹 Signup
+// 🔹 SIGNUP
 async function signup() {
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -19,26 +19,32 @@ async function signup() {
         return;
     }
 
-    const res = await fetch(`${API_URL}/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch(`${API_URL}/auth/signup`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (data.error) {
-        showMessage(data.error, "red");
-    } else {
-        showMessage("Signup success!", "green");
+        if (data.error) {
+            showMessage(data.error, "red");
+        } else {
+            showMessage("Signup success!", "green");
 
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 1000);
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1200);
+        }
+
+    } catch (err) {
+        console.error(err);
+        showMessage("Server error", "red");
     }
 }
 
-// 🔹 Login
+// 🔹 LOGIN (🔥 FIXED)
 async function login() {
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -48,23 +54,37 @@ async function login() {
         return;
     }
 
-    const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+    try {
+        const res = await fetch(`${API_URL}/auth/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ username, password })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (data.error) {
-        showMessage(data.error, "red");
-    } else {
+        console.log("LOGIN RESPONSE:", data); // 🔥 DEBUG
+
+        // ❌ If no token
+        if (!data.token) {
+            showMessage(data.error || "Login failed", "red");
+            return;
+        }
+
+        // ✅ Save token
         localStorage.setItem("token", data.token);
+
+        console.log("TOKEN SAVED:", localStorage.getItem("token")); // 🔥 DEBUG
 
         showMessage("Login success!", "green");
 
+        // 🔥 IMPORTANT: Delay redirect
         setTimeout(() => {
             window.location.href = "/dashboard.html";
-        }, 800);
+        }, 1500);
+
+    } catch (err) {
+        console.error(err);
+        showMessage("Server error", "red");
     }
 }
