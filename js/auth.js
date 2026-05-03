@@ -1,6 +1,6 @@
 console.log("Auth JS Loaded 🚀");
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://distributed-file-storage-system.onrender.com";
 
 // 🔹 Show message
 function showMessage(msg, color = "white") {
@@ -86,7 +86,7 @@ async function login() {
         if (data.error) {
             showMessage("❌ " + data.error, "red");
         } else {
-            
+
             localStorage.setItem("token", data.token);
 
             showMessage("✅ Login successful!", "lightgreen");

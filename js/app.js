@@ -1,8 +1,12 @@
 const API_URL = "https://distributed-file-storage-system.onrender.com";
 
-// 🔹 Get token
+// 🔹 Check login
 function getToken() {
     return localStorage.getItem("token");
+}
+
+if (!getToken()) {
+    window.location.href = "login.html";
 }
 
 // 🔹 Logout
@@ -14,13 +18,15 @@ function logout() {
 // 🔹 Show message
 function showMessage(msg, color) {
     const box = document.getElementById("messageBox");
+    if (!box) return;
+
     box.innerText = msg;
     box.style.color = color;
 
     setTimeout(() => box.innerText = "", 3000);
 }
 
-// 🔹 Upload
+// 🔹 Upload file
 async function uploadFile() {
     const fileInput = document.getElementById("fileInput");
     const file = fileInput.files[0];
@@ -33,99 +39,134 @@ async function uploadFile() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`${API_URL}/upload`, {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: formData
-    });
+    try {
+        const res = await fetch(`${API_URL}/upload`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + getToken()
+            },
+            body: formData
+        });
 
-    const data = await res.json();
+        if (!res.ok) {
+            throw new Error("Upload failed (Unauthorized or Server Error)");
+        }
 
-    if (data.error) {
-        showMessage(data.error, "red");
-    } else {
-        showMessage("Uploaded successfully", "green");
+        const data = await res.json();
+
+        showMessage("Uploaded successfully ✅", "green");
         loadFiles();
+        fileInput.value = "";
+
+    } catch (err) {
+        console.error(err);
+        showMessage("❌ Upload failed", "red");
     }
 }
 
 // 🔹 Load files
 async function loadFiles() {
-    const res = await fetch(`${API_URL}/files`, {
-        headers: {
-            "Authorization": `Bearer ${getToken()}`
+    try {
+        const res = await fetch(`${API_URL}/files`, {
+            headers: {
+                "Authorization": "Bearer " + getToken()
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Unauthorized");
         }
-    });
 
-    const data = await res.json();
-    const list = document.getElementById("fileList");
+        const data = await res.json();
+        const list = document.getElementById("fileList");
 
-    let html = "";
+        if (!list) return;
 
-    data.files.forEach(file => {
-        html += `
-        <li class="file-item">
-            <div>
-                📄 <strong>${file.filename}</strong><br>
-                <small>${(file.size / 1024).toFixed(2)} KB</small>
-            </div>
+        if (!data.files || data.files.length === 0) {
+            list.innerHTML = "<p>No files uploaded</p>";
+            return;
+        }
 
-            <div class="actions">
-                <button class="download-btn" onclick="downloadFile('${file.filename}')">
-                    ⬇ Download
-                </button>
+        let html = "";
 
-                <button class="delete-btn" onclick="deleteFile('${file.filename}')">
-                    🗑 Delete
-                </button>
-            </div>
-        </li>
-        `;
-    });
+        data.files.forEach(file => {
+            html += `
+            <li class="file-item">
+                <div>
+                    📄 <strong>${file.filename}</strong><br>
+                    <small>${(file.size / 1024).toFixed(2)} KB</small>
+                </div>
 
-    list.innerHTML = html;
+                <div class="actions">
+                    <button class="download-btn" onclick="downloadFile('${file.filename}')">
+                        ⬇ Download
+                    </button>
+
+                    <button class="delete-btn" onclick="deleteFile('${file.filename}')">
+                        🗑 Delete
+                    </button>
+                </div>
+            </li>
+            `;
+        });
+
+        list.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        showMessage("❌ Failed to load files (Login again)", "red");
+        logout(); // force re-login if token invalid
+    }
 }
 
 // 🔹 Download
 function downloadFile(filename) {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     window.open(`${API_URL}/download/${filename}?token=${token}`, "_blank");
 }
 
 // 🔹 Delete
 async function deleteFile(filename) {
-    const res = await fetch(`${API_URL}/delete/${filename}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${getToken()}`
+    try {
+        const res = await fetch(`${API_URL}/delete/${filename}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + getToken()
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error("Delete failed");
         }
-    });
 
-    const data = await res.json();
-
-    if (data.error) {
-        showMessage(data.error, "red");
-    } else {
-        showMessage("Deleted", "green");
+        showMessage("Deleted ✅", "green");
         loadFiles();
+
+    } catch (err) {
+        console.error(err);
+        showMessage("❌ Delete failed", "red");
     }
 }
 
 // 🔹 Profile dropdown
 function toggleDropdown() {
-    document.getElementById("dropdownMenu").classList.toggle("hidden");
+    const menu = document.getElementById("dropdownMenu");
+    if (menu) menu.classList.toggle("hidden");
 }
 
-// 🔹 Set username
+// 🔹 Decode username safely
 function setUsername() {
     const token = getToken();
-
     if (!token) return;
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    document.getElementById("usernameDisplay").innerText = payload.sub;
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const el = document.getElementById("usernameDisplay");
+
+        if (el) el.innerText = payload.sub;
+    } catch {
+        console.error("Invalid token");
+    }
 }
 
 // 🔹 Init

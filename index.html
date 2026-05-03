@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Distributed File Storage</title>
-    <link rel="stylesheet" href="css/style.css?v=10">
+    <link rel="stylesheet" href="css/style.css?v=20">
 </head>
 
 <body>
 
+    <!-- 🔹 Profile (Top Right) -->
     <div class="profile-menu">
         <div class="profile-btn" onclick="toggleDropdown()">
             👤 <span id="usernameDisplay">User</span>
@@ -19,24 +20,26 @@
         </div>
     </div>
 
+    <!-- 🔹 Main Container -->
     <div class="container">
         <h1>📦 Distributed File Storage System</h1>
 
-
+        <!-- Upload -->
         <div class="upload-box">
             <input type="file" id="fileInput">
             <button onclick="uploadFile()">⬆ Upload File</button>
         </div>
 
-
+        <!-- Message -->
         <div id="messageBox" class="message"></div>
 
-
+        <!-- File List -->
         <h2>📂 Uploaded Files</h2>
         <ul id="fileList"></ul>
     </div>
 
-    <script src="js/app.js?v=10"></script>
+
+    <script src="js/app.js?v=20"></script>
 
 </body>
 
