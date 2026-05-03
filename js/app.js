@@ -1,33 +1,33 @@
 const API_URL = "https://distributed-file-storage-system.onrender.com";
 
-// 🔹 CHECK AUTH
+// AUTH CHECK
 function checkAuth() {
     const token = localStorage.getItem("token");
 
     if (!token || token === "undefined" || token === "null") {
-        window.location.href = "login.html";
+        window.location.href = "index.html"; // 🔥 login page
     }
 }
 
-// 🔹 GET TOKEN
+// GET TOKEN
 function getToken() {
     return localStorage.getItem("token");
 }
 
-// 🔹 LOGOUT
+// LOGOUT
 function logout() {
     localStorage.removeItem("token");
-    window.location.href = "login.html";
+    window.location.href = "index.html"; // 🔥 back to login
 }
 
-// 🔹 MESSAGE
+// MESSAGE
 function showMessage(msg, color) {
     const box = document.getElementById("messageBox");
     box.innerText = msg;
     box.style.color = color;
 }
 
-// 🔹 UPLOAD
+// UPLOAD
 async function uploadFile() {
     const file = document.getElementById("fileInput").files[0];
 
@@ -57,7 +57,7 @@ async function uploadFile() {
     }
 }
 
-// 🔹 LOAD FILES
+// LOAD FILES
 async function loadFiles() {
     const res = await fetch(`${API_URL}/files`, {
         headers: {
@@ -72,7 +72,7 @@ async function loadFiles() {
 
     data.files.forEach(file => {
         html += `
-        <li class="file-item">
+        <li>
             📄 ${file.filename}
             <button onclick="downloadFile('${file.filename}')">⬇</button>
             <button onclick="deleteFile('${file.filename}')">🗑</button>
@@ -82,12 +82,12 @@ async function loadFiles() {
     list.innerHTML = html;
 }
 
-// 🔹 DOWNLOAD
+// DOWNLOAD
 function downloadFile(name) {
     window.open(`${API_URL}/download/${name}?token=${getToken()}`);
 }
 
-// 🔹 DELETE
+// DELETE
 async function deleteFile(name) {
     await fetch(`${API_URL}/delete/${name}`, {
         method: "DELETE",
@@ -99,12 +99,12 @@ async function deleteFile(name) {
     loadFiles();
 }
 
-// 🔹 PROFILE
+// PROFILE
 function toggleDropdown() {
     document.getElementById("dropdownMenu").classList.toggle("hidden");
 }
 
-// 🔹 USERNAME
+// USERNAME
 function setUsername() {
     const token = getToken();
     if (!token) return;
@@ -113,7 +113,7 @@ function setUsername() {
     document.getElementById("usernameDisplay").innerText = payload.sub;
 }
 
-// 🔹 INIT
+// INIT
 window.onload = () => {
     checkAuth();
     setUsername();
