@@ -1,45 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Distributed File Storage</title>
-    <link rel="stylesheet" href="css/style.css?v=20">
+    <title>Storage</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <!-- 🔹 Profile (Top Right) -->
     <div class="profile-menu">
-        <div class="profile-btn" onclick="toggleDropdown()">
+        <div onclick="toggleDropdown()">
             👤 <span id="usernameDisplay">User</span>
         </div>
 
-        <div id="dropdownMenu" class="dropdown hidden">
-            <button onclick="logout()">🚪 Logout</button>
+        <div id="dropdownMenu" class="hidden">
+            <button onclick="logout()">Logout</button>
         </div>
     </div>
 
-    <!-- 🔹 Main Container -->
     <div class="container">
-        <h1>📦 Distributed File Storage System</h1>
+        <h1>📦 Distributed File Storage</h1>
 
-        <!-- Upload -->
-        <div class="upload-box">
-            <input type="file" id="fileInput">
-            <button onclick="uploadFile()">⬆ Upload File</button>
-        </div>
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">Upload</button>
 
-        <!-- Message -->
-        <div id="messageBox" class="message"></div>
+        <div id="messageBox"></div>
 
-        <!-- File List -->
-        <h2>📂 Uploaded Files</h2>
+        <h2>Files</h2>
         <ul id="fileList"></ul>
     </div>
 
-
-    <script src="./js/app.js?v=20"></script>
+    <script src="js/app.js"></script>
 
 </body>
 

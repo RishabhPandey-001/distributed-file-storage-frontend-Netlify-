@@ -1,33 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
     <title>Signup</title>
-    <link rel="stylesheet" href="css/style.css?v=1">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
     <div class="container">
-        <h1>🆕 Create Account</h1>
+        <h1>Create Account</h1>
 
-        <div class="upload-box">
-            <input type="text" id="username" placeholder="Enter Username"><br><br>
-            <input type="password" id="password" placeholder="Enter Password"><br><br>
+        <input type="text" id="username" placeholder="Username"><br><br>
+        <input type="password" id="password" placeholder="Password"><br><br>
 
-            <button onclick="signup()">Signup</button>
-        </div>
+        <button onclick="signup()">Signup</button>
 
-        <p>Already have an account?
-            <a href="login.html">Login</a>
-        </p>
+        <p>Already have an account? <a href="login.html">Login</a></p>
 
-        <div id="messageBox" class="message"></div>
+        <div id="messageBox"></div>
     </div>
 
-    <!-- IMPORTANT -->
-    <script src="js/auth.js?v=2"></script>
+    <script src="js/auth.js"></script>
 
 </body>
 

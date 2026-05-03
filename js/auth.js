@@ -5,6 +5,8 @@ const API_URL = "https://distributed-file-storage-system.onrender.com";
 // 🔹 Show message
 function showMessage(msg, color = "white") {
     const box = document.getElementById("messageBox");
+    if (!box) return;
+
     box.innerText = msg;
     box.style.color = color;
 
@@ -13,24 +15,22 @@ function showMessage(msg, color = "white") {
     }, 3000);
 }
 
-// 🔹 SIGNUP (GLOBAL)
+// 🔹 SIGNUP
 window.signup = async function () {
-    console.log("Signup button clicked");
+    console.log("Signup clicked");
 
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
 
     if (!username || !password) {
-        showMessage("❌ Please fill all fields", "red");
+        showMessage("❌ Fill all fields", "red");
         return;
     }
 
     try {
         const res = await fetch(`${API_URL}/auth/signup`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
         });
 
@@ -40,7 +40,7 @@ window.signup = async function () {
         if (data.error) {
             showMessage("⚠️ " + data.error, "orange");
         } else {
-            showMessage("✅ Signup successful! Redirecting...", "lightgreen");
+            showMessage("✅ Signup successful", "lightgreen");
 
             setTimeout(() => {
                 window.location.href = "login.html";
@@ -48,29 +48,27 @@ window.signup = async function () {
         }
 
     } catch (err) {
-        console.error("Signup error:", err);
+        console.error(err);
         showMessage("❌ Server error", "red");
     }
 };
 
-// 🔹 LOGIN (GLOBAL)
+// 🔹 LOGIN
 window.login = async function () {
-    console.log("Login button clicked");
+    console.log("Login clicked");
 
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
 
     if (!username || !password) {
-        showMessage("❌ Please fill all fields", "red");
+        showMessage("❌ Fill all fields", "red");
         return;
     }
 
     try {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
         });
 
@@ -80,18 +78,20 @@ window.login = async function () {
         if (data.error) {
             showMessage("❌ " + data.error, "red");
         } else {
-            // 🔥 FIX: correct key
+            // ✅ IMPORTANT FIX
             localStorage.setItem("token", data.access_token);
 
-            showMessage("✅ Login successful!", "lightgreen");
+            console.log("Saved token:", localStorage.getItem("token"));
+
+            showMessage("✅ Login success", "lightgreen");
 
             setTimeout(() => {
                 window.location.href = "index.html";
-            }, 1000);
+            }, 800);
         }
 
     } catch (err) {
-        console.error("Login error:", err);
+        console.error(err);
         showMessage("❌ Server error", "red");
     }
 };

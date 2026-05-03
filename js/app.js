@@ -1,12 +1,17 @@
 const API_URL = "https://distributed-file-storage-system.onrender.com";
 
-// 🔹 Check login
+// 🔹 Get token
 function getToken() {
     return localStorage.getItem("token");
 }
 
-if (!getToken()) {
-    window.location.href = "login.html";
+// 🔹 Check auth
+function checkAuth() {
+    const token = getToken();
+
+    if (!token || token === "undefined" || token === "null") {
+        window.location.href = "login.html";
+    }
 }
 
 // 🔹 Logout
@@ -15,7 +20,7 @@ function logout() {
     window.location.href = "login.html";
 }
 
-// 🔹 Show message
+// 🔹 Message
 function showMessage(msg, color) {
     const box = document.getElementById("messageBox");
     if (!box) return;
@@ -26,151 +31,112 @@ function showMessage(msg, color) {
     setTimeout(() => box.innerText = "", 3000);
 }
 
-// 🔹 Upload file
+// 🔹 Upload
 async function uploadFile() {
     const fileInput = document.getElementById("fileInput");
     const file = fileInput.files[0];
 
     if (!file) {
-        showMessage("Select a file", "red");
+        showMessage("Select file", "red");
         return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-        const res = await fetch(`${API_URL}/upload`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + getToken()
-            },
-            body: formData
-        });
+    const res = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + getToken()
+        },
+        body: formData
+    });
 
-        if (!res.ok) {
-            throw new Error("Upload failed (Unauthorized or Server Error)");
-        }
+    const data = await res.json();
 
-        const data = await res.json();
-
-        showMessage("Uploaded successfully ✅", "green");
+    if (data.error) {
+        showMessage(data.error, "red");
+    } else {
+        showMessage("Uploaded ✅", "green");
         loadFiles();
-        fileInput.value = "";
-
-    } catch (err) {
-        console.error(err);
-        showMessage("❌ Upload failed", "red");
     }
 }
 
 // 🔹 Load files
 async function loadFiles() {
-    try {
-        const res = await fetch(`${API_URL}/files`, {
-            headers: {
-                "Authorization": "Bearer " + getToken()
-            }
-        });
-
-        if (!res.ok) {
-            throw new Error("Unauthorized");
+    const res = await fetch(`${API_URL}/files`, {
+        headers: {
+            "Authorization": "Bearer " + getToken()
         }
+    });
 
-        const data = await res.json();
-        const list = document.getElementById("fileList");
+    const data = await res.json();
+    const list = document.getElementById("fileList");
 
-        if (!list) return;
+    if (!data.files) return;
 
-        if (!data.files || data.files.length === 0) {
-            list.innerHTML = "<p>No files uploaded</p>";
-            return;
-        }
+    let html = "";
 
-        let html = "";
+    data.files.forEach(file => {
+        html += `
+        <li class="file-item">
+            <div>
+                📄 <strong>${file.filename}</strong><br>
+                <small>${(file.size / 1024).toFixed(2)} KB</small>
+            </div>
 
-        data.files.forEach(file => {
-            html += `
-            <li class="file-item">
-                <div>
-                    📄 <strong>${file.filename}</strong><br>
-                    <small>${(file.size / 1024).toFixed(2)} KB</small>
-                </div>
+            <div class="actions">
+                <button onclick="downloadFile('${file.filename}')">⬇</button>
+                <button onclick="deleteFile('${file.filename}')">🗑</button>
+            </div>
+        </li>`;
+    });
 
-                <div class="actions">
-                    <button class="download-btn" onclick="downloadFile('${file.filename}')">
-                        ⬇ Download
-                    </button>
-
-                    <button class="delete-btn" onclick="deleteFile('${file.filename}')">
-                        🗑 Delete
-                    </button>
-                </div>
-            </li>
-            `;
-        });
-
-        list.innerHTML = html;
-
-    } catch (err) {
-        console.error(err);
-        showMessage("❌ Failed to load files (Login again)", "red");
-        logout(); // force re-login if token invalid
-    }
+    list.innerHTML = html;
 }
 
 // 🔹 Download
 function downloadFile(filename) {
     const token = getToken();
-    window.open(`${API_URL}/download/${filename}?token=${token}`, "_blank");
+    window.open(`${API_URL}/download/${filename}?token=${token}`);
 }
 
 // 🔹 Delete
 async function deleteFile(filename) {
-    try {
-        const res = await fetch(`${API_URL}/delete/${filename}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + getToken()
-            }
-        });
-
-        if (!res.ok) {
-            throw new Error("Delete failed");
+    const res = await fetch(`${API_URL}/delete/${filename}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + getToken()
         }
+    });
 
+    const data = await res.json();
+
+    if (data.error) {
+        showMessage(data.error, "red");
+    } else {
         showMessage("Deleted ✅", "green");
         loadFiles();
-
-    } catch (err) {
-        console.error(err);
-        showMessage("❌ Delete failed", "red");
     }
 }
 
-// 🔹 Profile dropdown
+// 🔹 Dropdown
 function toggleDropdown() {
-    const menu = document.getElementById("dropdownMenu");
-    if (menu) menu.classList.toggle("hidden");
+    document.getElementById("dropdownMenu").classList.toggle("hidden");
 }
 
-// 🔹 Decode username safely
+// 🔹 Username
 function setUsername() {
     const token = getToken();
     if (!token) return;
 
-    try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const el = document.getElementById("usernameDisplay");
-
-        if (el) el.innerText = payload.sub;
-    } catch {
-        console.error("Invalid token");
-    }
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    document.getElementById("usernameDisplay").innerText = payload.sub;
 }
 
-// 🔹 Init
+// 🔹 INIT
 window.onload = () => {
+    checkAuth();     // 🔥 VERY IMPORTANT
     setUsername();
     loadFiles();
 };
