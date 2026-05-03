@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Distributed File Storage</title>
+    <link rel="stylesheet" href="css/style.css?v=10">
+</head>
+
+<body>
+
+    <div class="profile-menu">
+        <div class="profile-btn" onclick="toggleDropdown()">
+            👤 <span id="usernameDisplay">User</span>
+        </div>
+
+        <div id="dropdownMenu" class="dropdown hidden">
+            <button onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>📦 Distributed File Storage System</h1>
+
+
+        <div class="upload-box">
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">⬆ Upload File</button>
+        </div>
+
+
+        <div id="messageBox" class="message"></div>
+
+
+        <h2>📂 Uploaded Files</h2>
+        <ul id="fileList"></ul>
+    </div>
+
+    <script src="js/app.js?v=10"></script>
+
+</body>
+
+</html>

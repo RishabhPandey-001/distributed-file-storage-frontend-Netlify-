@@ -1,0 +1,130 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Background */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0a192f, #112240, #1e3a5f);
+    color: #fff;
+}
+
+/* Container */
+.container {
+    width: 55%;
+    margin: 80px auto;
+    text-align: center;
+}
+
+/* Title */
+h1 {
+    margin-bottom: 30px;
+}
+
+/* Upload Box */
+.upload-box {
+    background: #112240;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+/* Button */
+button {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+/* Upload button */
+.upload-box button {
+    background: #38bdf8;
+    color: white;
+}
+
+/* File list */
+ul {
+    list-style: none;
+}
+
+/* File card */
+.file-item {
+    background: #1e3a5f;
+    margin: 12px 0;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Actions */
+.actions button {
+    margin-left: 8px;
+}
+
+/* Download button */
+.download-btn {
+    background: #0ea5e9;
+    color: white;
+}
+
+.download-btn:hover {
+    background: #0284c7;
+}
+
+/* Delete button */
+.delete-btn {
+    background: #64748b;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #475569;
+}
+
+/* Profile */
+.profile-menu {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+.profile-btn {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.profile-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dropdown */
+.dropdown {
+    margin-top: 8px;
+    background: #112240;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+.dropdown button {
+    width: 100%;
+    background: transparent;
+    color: white;
+}
+
+.dropdown button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
