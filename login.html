@@ -3,30 +3,39 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Login - Storage System</title>
-    <link rel="stylesheet" href="css/style.css?v=20">
+    <title>Distributed File Storage</title>
+    <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 
 <body>
 
-    <div class="container">
-        <h1>🔐 Login</h1>
-        <h3>Welcome to Your Storage House</h3>
+    <!-- PROFILE -->
+    <div class="profile-menu">
+        <div class="profile-btn" onclick="toggleDropdown()">
+            👤 <span id="usernameDisplay">User</span>
+        </div>
 
-        <input type="text" id="username" placeholder="Enter Username"><br><br>
-        <input type="password" id="password" placeholder="Enter Password"><br><br>
-
-        <button onclick="login()">Login</button>
-
-        <p>Don't have an account?
-            <a href="signup.html">Signup</a>
-        </p>
-
-        <div id="messageBox" class="message"></div>
+        <div id="dropdownMenu" class="dropdown hidden">
+            <button onclick="logout()">🚪 Logout</button>
+        </div>
     </div>
 
+    <div class="container">
+        <h1>📦 Distributed File Storage System</h1>
 
-    <script src="./js/auth.js?v=20"></script>
+        <!-- UPLOAD -->
+        <div class="upload-box">
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">⬆ Upload File</button>
+        </div>
+
+        <div id="messageBox" class="message"></div>
+
+        <h2>📂 Uploaded Files</h2>
+        <ul id="fileList"></ul>
+    </div>
+
+    <script src="js/app.js?v=5"></script>
 
 </body>
 

@@ -1,37 +1,27 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Storage</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 
 <body>
 
-    <div class="profile-menu">
-        <div onclick="toggleDropdown()">
-            👤 <span id="usernameDisplay">User</span>
-        </div>
-
-        <div id="dropdownMenu" class="hidden">
-            <button onclick="logout()">Logout</button>
-        </div>
-    </div>
-
     <div class="container">
-        <h1>📦 Distributed File Storage</h1>
+        <h1>🔐 Login</h1>
 
-        <input type="file" id="fileInput">
-        <button onclick="uploadFile()">Upload</button>
+        <input type="text" id="username" placeholder="Username"><br><br>
+        <input type="password" id="password" placeholder="Password"><br><br>
+
+        <button onclick="login()">Login</button>
+
+        <p>Don't have an account? <a href="signup.html">Signup</a></p>
 
         <div id="messageBox"></div>
-
-        <h2>Files</h2>
-        <ul id="fileList"></ul>
     </div>
 
-    <script src="js/app.js"></script>
+    <!-- IMPORTANT: use version to avoid cache -->
+    <script src="js/auth.js?v=5"></script>
 
 </body>
-
 </html>

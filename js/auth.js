@@ -2,17 +2,11 @@ console.log("Auth JS Loaded 🚀");
 
 const API_URL = "https://distributed-file-storage-system.onrender.com";
 
-// 🔹 Show message
+// 🔹 Message
 function showMessage(msg, color = "white") {
     const box = document.getElementById("messageBox");
-    if (!box) return;
-
     box.innerText = msg;
     box.style.color = color;
-
-    setTimeout(() => {
-        box.innerText = "";
-    }, 3000);
 }
 
 // 🔹 SIGNUP
@@ -35,16 +29,15 @@ window.signup = async function () {
         });
 
         const data = await res.json();
-        console.log("Signup response:", data);
 
         if (data.error) {
-            showMessage("⚠️ " + data.error, "orange");
+            showMessage(data.error, "orange");
         } else {
-            showMessage("✅ Signup successful", "lightgreen");
+            showMessage("✅ Signup successful", "green");
 
             setTimeout(() => {
                 window.location.href = "login.html";
-            }, 1200);
+            }, 1000);
         }
 
     } catch (err) {
@@ -76,14 +69,14 @@ window.login = async function () {
         console.log("Login response:", data);
 
         if (data.error) {
-            showMessage("❌ " + data.error, "red");
+            showMessage(data.error, "red");
         } else {
             // ✅ IMPORTANT FIX
-            localStorage.setItem("token", data.access_token);
+            const token = data.token || data.access_token;
 
-            console.log("Saved token:", localStorage.getItem("token"));
+            localStorage.setItem("token", token);
 
-            showMessage("✅ Login success", "lightgreen");
+            showMessage("✅ Login success", "green");
 
             setTimeout(() => {
                 window.location.href = "index.html";
