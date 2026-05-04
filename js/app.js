@@ -1,33 +1,34 @@
 const API_URL = "https://distributed-file-storage-system.onrender.com";
 
-// 🔐 Check login
+// CHECK LOGIN
 const token = localStorage.getItem("token");
+
 if (!token) {
-    window.location.href = "/login.html";
+    window.location.href = "login.html";
 }
 
-// Logout
+// LOGOUT
 function logout() {
     localStorage.removeItem("token");
-    window.location.href = "/login.html";
+    window.location.href = "login.html";
 }
 
-// Show message
+// SHOW MESSAGE
 function showMessage(msg, color) {
     const box = document.getElementById("messageBox");
     box.innerText = msg;
     box.style.color = color;
-    setTimeout(() => box.innerText = "", 3000);
 }
 
-// Upload
+// SET USERNAME
+function setUsername() {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    document.getElementById("usernameDisplay").innerText = payload.sub;
+}
+
+// UPLOAD
 async function uploadFile() {
     const file = document.getElementById("fileInput").files[0];
-
-    if (!file) {
-        showMessage("Select file", "red");
-        return;
-    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -35,7 +36,7 @@ async function uploadFile() {
     const res = await fetch(`${API_URL}/upload`, {
         method: "POST",
         headers: {
-            "Authorization": "Bearer " + token
+            Authorization: "Bearer " + token
         },
         body: formData
     });
@@ -50,11 +51,11 @@ async function uploadFile() {
     }
 }
 
-// Load files
+// LOAD FILES
 async function loadFiles() {
     const res = await fetch(`${API_URL}/files`, {
         headers: {
-            "Authorization": "Bearer " + token
+            Authorization: "Bearer " + token
         }
     });
 
@@ -66,39 +67,28 @@ async function loadFiles() {
 
     list.innerHTML = data.files.map(file => `
         <li>
-            📄 ${file.filename} (${(file.size / 1024).toFixed(2)} KB)
-            <button onclick="downloadFile('${file.filename}')">⬇</button>
-            <button onclick="deleteFile('${file.filename}')">🗑</button>
+            ${file.filename}
+            <button onclick="downloadFile('${file.filename}')">Download</button>
+            <button onclick="deleteFile('${file.filename}')">Delete</button>
         </li>
     `).join("");
 }
 
-// Download
+// DOWNLOAD
 function downloadFile(filename) {
     window.open(`${API_URL}/download/${filename}?token=${token}`);
 }
 
-// Delete
+// DELETE
 async function deleteFile(filename) {
     await fetch(`${API_URL}/delete/${filename}`, {
         method: "DELETE",
         headers: {
-            "Authorization": "Bearer " + token
+            Authorization: "Bearer " + token
         }
     });
 
     loadFiles();
-}
-
-// Profile
-function toggleDropdown() {
-    document.getElementById("dropdownMenu").classList.toggle("hidden");
-}
-
-// Set username
-function setUsername() {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    document.getElementById("usernameDisplay").innerText = payload.sub;
 }
 
 window.onload = () => {
